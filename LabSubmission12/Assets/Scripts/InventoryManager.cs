@@ -39,7 +39,8 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log($"Item with ID {searchId} not found in inventory.");
         }
-
+        QuickSortByValue(inventory);
+        PrintInventory(); // Values printed in acsending order
     }
 
     void GenerateInventory() {
@@ -102,5 +103,46 @@ public class InventoryManager : MonoBehaviour
         foreach (InventoryItem item in inventory) {
             Debug.Log($"ID: {item.ID} | Name: {item.Name} | Value: {item.Value}");
         }
+    }
+
+    public void QuickSortByValue(List<InventoryItem> items)
+{
+    if (items == null || items.Count < 2) return;
+    QuickSortByValue(items, 0, items.Count - 1);
+}
+
+    private void QuickSortByValue(List<InventoryItem> items, int low, int high)
+    {
+        if (low < high)
+        {
+            int pivotIndex = PartitionByValue(items, low, high);
+            QuickSortByValue(items, low, pivotIndex - 1);   // sort left of pivot
+            QuickSortByValue(items, pivotIndex + 1, high);  // sort right of pivot
+        }
+    }
+
+    private int PartitionByValue(List<InventoryItem> items, int low, int high)
+    {
+        int pivotValue = items[high].Value; // sets the last item as the pivot
+        int i = low - 1;                    // bounds
+
+        for (int j = low; j < high; j++)
+        {
+            if (items[j].Value <= pivotValue)
+            {
+                i++;
+                Swap(items, i, j);
+            }
+        }
+
+        Swap(items, i + 1, high); //set the pivot to the finnal position
+        return i + 1;
+    }
+
+    private void Swap(List<InventoryItem> items, int a, int b)
+    {
+        InventoryItem temp = items[a];
+        items[a] = items[b];
+        items[b] = temp;
     }
 }
